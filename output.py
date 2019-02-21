@@ -1,4 +1,4 @@
-def toHTML(puzzle, status, puzzle1, aClues, dClues):
+def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
 
    sz = (puzzle.size+2) * 30
 
@@ -54,7 +54,7 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues):
    #button = "<button class=\"btn success\">Success</button>"
 
 
-   form = "<form action=\"/success/\" method=\"post\"> <input type=\"hidden\" id=\"puzzlestring\" name=\"puzzlestring\" value=\"" + puzzle1 + "\"> <input type=\"submit\" value= \"Looks good!\"  name=\"button\" id=\"name\" /> </form>"
+   form = "<form action=\"/success/\" method=\"post\"><input type=\"hidden\" id=\"puzzlestring\" name=\"puzzlestring\" value=\"" + puzzle1 + "\"><input type =\"hidden\" id\"type\" name=\"type\" value=\"" + puzType +"\"><input type=\"submit\" value= \"Looks good!\"  name=\"button\" id=\"name\" /> </form>"
 
    if status == "Does this look correct?":
         #footer = form + "<button><a href=\"/\">No, I'll fix it</a></button></div>" + "</body></html>"

@@ -6,7 +6,7 @@ from output import toHTML
 import ai
 import textdictionary as td
 
-def main(PUZZ):
+def main(PUZZ, puzType):
 
    #cwe = importDict.importCSV("crosswordese.csv")
    aClues, dClues, puzzle = inputPuzzle(PUZZ)
@@ -14,20 +14,23 @@ def main(PUZZ):
    #return thing
    clues = aClues + dClues
    #strategy.getSyns(clues, puzzle, cwe, 'c')          #always imports CWE dictionary
+   if puzType == "synonym":
+        dictionary = td.dictionary         #moby thes saved as python dict variable. 'd' for getSyns. doesn't have everything as key
 
-   dictionary = td.dictionary         #moby thes saved as python dict variable. 'd' for getSyns. doesn't have everything as key
+        strategy.getSyns(clues, puzzle, dictionary, 'd')           #d for dictionary/csv file, l for list the moby thesaurus
 
-   strategy.getSyns(clues, puzzle, dictionary, 'd')           #d for dictionary/csv file, l for list the moby thesaurus
+        inNeed = list()                              #pulls in list type syns if there were no matches from dictionary
+        for i in clues:
+            if len(i.syns) == 0:
+                inNeed.append(i)
 
+        mobyPath = "/home/esceeles/mysite/mobythes.aur"
+        dictionary = importDict.importAUR(mobyPath)
+        strategy.getSyns(inNeed, puzzle, dictionary, 'l')
 
-   inNeed = list()                              #pulls in list type syns if there were no matches from dictionary
-   for i in clues:
-      if len(i.syns) == 0:
-         inNeed.append(i)
-
-   mobyPath = "/home/esceeles/mysite/mobythes.aur"
-   dictionary = importDict.importAUR(mobyPath)
-   strategy.getSyns(inNeed, puzzle, dictionary, 'l')
+   else:
+         strategy.getSyns(clues, puzzle, 'web', 'cn')
+         strategy.getSyns(clues, puzzle, 'web', 's')
 
 
    least= ai.findLeastConnected(clues, puzzle)
@@ -57,5 +60,5 @@ def main(PUZZ):
            puz = puz + puzzle.grid[i][j].value
    #return puz
 
-   S = toHTML(puzzle, "Solved Puzzle: ", PUZZ, aClues, dClues)
+   S = toHTML(puzzle, "Solved Puzzle: ", PUZZ, aClues, dClues, puzType)
    return S

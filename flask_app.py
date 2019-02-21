@@ -1,5 +1,3 @@
-
-# A very simple Flask Hello World app for you to get started with...
 from main import main
 from output import toHTML
 from flask import Flask
@@ -17,13 +15,26 @@ def hello_world():
         puzzle1 = None
         try:
             puzzle1 = str(request.form["puzzle1"])
+            puzType = str(request.form["type"])
         except:
             errors += "<p>{!r} is not a valid input.</p>\n".format(request.form["puzzle1"])
         if puzzle1 is not None:
+            puzType="synonym"
             aClues, dClues, puzzle = inputPuzzle(puzzle1)
-            puzHTML, strPuzzle = toHTML(puzzle, "Does this look correct?", puzzle1, aClues, dClues)
-            #output(strPuzzle)
+            if aClues == "nothing":
+                return '''
+                <h4>You didn't enter anything to process...</h4>
+                <p><a href=\"/\">Click here to do another one</a></div></p>
+                '''
+            if aClues == "notNum":
+                return '''
+                <h4> Please enter an integer dimension as your first element. </h4>
+                <p><a href=\"/\">Click here to do another one</a></div></p>
+                '''
+            puzHTML, strPuzzle = toHTML(puzzle, "Does this look correct?", puzzle1, aClues, dClues, puzType)
             return puzHTML
+
+
             result = main(puzzle1)
             return result.format(puzzle1=puzzle1)
 
@@ -34,9 +45,9 @@ def hello_world():
 @app.route('/success/', methods = ['POST', 'GET'])
 def output():
     puzzle1 = request.form['puzzlestring']
-    result, trash = main(puzzle1)
+    #return puzzle1
+    puzType = request.form["type"]
+    result, trash = main(puzzle1, puzType)
     return result
-
-
 
 

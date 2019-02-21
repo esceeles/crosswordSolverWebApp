@@ -1,6 +1,6 @@
 import copy
 from itertools import combinations
-
+import beautiful
 
 #pulls in synonyms of the right size
 def getSyns(clues, puzzle, dictionary, form):
@@ -17,11 +17,10 @@ def getSyns(clues, puzzle, dictionary, form):
    elif form == 'd':             #get syns from csv syn list
       for i in clues:
          if i.name in dictionary:
-            #for syn in dictionary[i.name]:
-                #syn = syn.replace(" ", "").replace("-", "").replace("_", "").lower()
-                #if len(syn) == i.length and syn not in i.syns:
-                    #i.syns.append(syn)
-            i.syns = [x.replace(" ", "").replace("-","").replace("_","").lower() for x in dictionary[i.name] if len(x.replace(" ", "").replace("-","")) == i.length]
+            for syn in dictionary[i.name]:
+                syn = syn.replace(" ", "").replace("-", "").replace("_", "").lower()
+                if len(syn) == i.length and syn not in i.syns:
+                    i.syns.append(syn)
 
 
    elif form == 'c':             #get answers from crosswordese dictionary
@@ -31,10 +30,19 @@ def getSyns(clues, puzzle, dictionary, form):
                syn = syn.replace(" ", "").replace("-", "").replace("_","").lower()
                if len(syn) == i.length and syn not in i.syns:
                   i.syns.append(syn)
-   #else:
-      #print("Error reading in dictionary")
-      #return
 
+   elif form == 's':
+        for i in clues:
+            x = beautiful.scrapeDictionDotCom(i)
+            for y in x:
+                if len(y) == i.length and y not in i.syns:
+                    i.syns.append(y)
+   elif form == 'cn':
+        for i in clues:
+            x = beautiful.scrapeCrossNexus(i)
+            for y in x:
+                if len(y) == i.length and y not in i.syns:
+                    i.syns.append(y)
 
    #for i in clues:
       #i.syns.sort(key = str.lower, reverse = True)

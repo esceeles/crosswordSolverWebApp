@@ -7,17 +7,20 @@ def inputPuzzle(puzzleFile):
    dClues = list()
    puzzle = list()
 
+   #return puzzleFile, None, None
    puzzleFile = puzzleFile.split('\n')
+   if not puzzleFile[0]:
+       return "nothing", None, None
+   if puzzleFile[0].isalpha():
+       return "notNum", None, None
    size = int(puzzleFile[0])
    newPuzzle = list()
    for item in puzzleFile:
       item = str(item.replace("\r", ""))
       newPuzzle.append(item)
    puzzleFile = newPuzzle[2:]
-
    count = 0
    i = puzzleFile[count]
-
    while i != '':
       #print(i, 'across')
       c = i.split(':')
@@ -44,7 +47,6 @@ def inputPuzzle(puzzleFile):
    count += 1
    pad = [Clue.Cell(x, 0, '#') for x in range (0, size+2)]
    puzzle.append(pad)
-   index = 0
 
    for y in range(0, size):
       i = puzzleFile[count]

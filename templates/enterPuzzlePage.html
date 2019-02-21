@@ -37,13 +37,15 @@
                 <h1>Crossword Solver</h1>
                 <p>This is a crossword solver application. It can solve synonym/vocab crossword puzzles or more complicated
                 ones. It can't solve puzzles with clues that reference eachother. </p>
-                <p>First enter the array dimensions, followed by a blank line, then list the across clues and down
+                <p>First enter the puzzle dimension (as a square matrix), followed by a blank line, then list the across clues and down
                 clues in "number:clue" format, as seen in the sample puzzle. The last part is the grid.
                 Black squares are '#', numbered squares are just the number, and empty squares are '_'.</p>
                 <h4> Please enter your puzzle in the box below:</h4>
 
                 <form method="post" action=".">
                     <p><textarea name="puzzle1" rows="30" cols="50"></textarea></p>
+                    <input type="radio" name="type" value="synonym" id="synonym" > Synonym<br>
+                    <input type="radio" name="type" value="other" id = "other"> Other<br>
                     <p><input type="submit" value="Solve it!" /></p>
                 </form>
                 </div>
