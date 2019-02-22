@@ -3,10 +3,11 @@ from output import toHTML
 from flask import Flask
 from flask import request, render_template
 from inputPuzzle import inputPuzzle
+from model_pylist import model
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-
+model = model()
 
 @app.route('/', methods = ['GET', 'POST'])
 def hello_world():
@@ -21,6 +22,7 @@ def hello_world():
         if puzzle1 is not None:
             puzType="synonym"
             aClues, dClues, puzzle = inputPuzzle(puzzle1)
+            model.insert(puzzle, puzType, puzzle1)
             if aClues == "nothing":
                 return '''
                 <h4>You didn't enter anything to process...</h4>
@@ -44,9 +46,12 @@ def hello_world():
 
 @app.route('/success/', methods = ['POST', 'GET'])
 def output():
-    puzzle1 = request.form['puzzlestring']
+    c = model.select()
+    puzzle1 = c[0][2]
+    puzType = c[0][1]
+    #puzzle1 = request.form['puzzlestring']
     #return puzzle1
-    puzType = request.form["type"]
+    #puzType = request.form["type"]
     result, trash = main(puzzle1, puzType)
     return result
 
