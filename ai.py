@@ -1,4 +1,4 @@
-#import copy
+import copy
 #import math
 import strategy
 #import heapq
@@ -51,81 +51,6 @@ class GraphTree:
                             else:
                                 self.edges[a.name].append(b.name)
 
-
-    def BFS(graph, root, puzzle, clues):
-       path = Queue()
-       path.put(root)
-       came_from = {}
-       came_from[root] = None
-
-       while not path.empty():
-           c = path.get()
-           #print("current Clue: ", c)
-           temp = graph.wordToClue[c]
-           current = Path(temp, None, None, puzzle, None, None)
-           #print("calling makeSynList for ", current.nextClue)
-           graph.makeSynList(current, puzzle)
-           #print("after making SynList")
-
-           if current.synList == 0 or len(current.synList) == current.tryIndex:
-               #print("######try index overflow or no synList")
-               current.tryIndex = 0
-               connections = graph.edges[c]
-               next = None
-               for link in connections:
-                 #print(link)
-                 clue = graph.wordToClue[link]
-                 if clue.done == True:
-                     #print("removing word")
-                     strategy.removeWord(clue, puzzle)
-                     #puzzle.print()
-                     next = clue
-                     #path.put(next)
-                 break
-               current = Path(next, None, None, puzzle, None, None)
-               graph.makeSynList(current, puzzle)
-               continue
-
-           wordChosen = current.synList[current.tryIndex]
-           #print("after choosing word")
-           if strategy.insertWord(current.nextClue, wordChosen, puzzle) == 1:
-               #print("problem inserting word")
-               return 1
-           current.tryIndex += 1
-           #puzzle.print()
-           if strategy.checkDone(clues, puzzle) == 0:
-               return 0
-
-           for next in graph.neighbors(c):
-               if next not in came_from:
-                  path.put(next)
-                  came_from[next] = c
-
-       return came_from
-
-    # A function used by DFS
-    def DFSUtil(self,v,visited):
-
-        # Mark the current node as visited and print it
-        visited[v]= True
-        print(v)
-
-        # Recur for all the vertices adjacent to this vertex
-        for i in self.graph[v]:
-            if visited[i] == False:
-                self.DFSUtil(i, visited)
-
-
-    # The function to do DFS traversal. It uses
-    # recursive DFSUtil()
-    def DFS(self,v):
-
-        # Mark all the vertices as not visited
-        visited = [False]*(len(self.graph))
-
-        # Call the recursive helper function to print
-        # DFS traversal
-        self.DFSUtil(v,visited)
 
     def makeSynList(self, current, puzzle):
         #print("making syn list")
@@ -199,6 +124,7 @@ class GraphTree:
     def traverse(self, clues, puzzle):
         current = self.root
         current.arcList = self.arcList
+        stepArray = list()
 
         while strategy.checkDone(clues, puzzle) != 0:
             #print("nextClue: ", current.nextClue.name)
@@ -215,7 +141,7 @@ class GraphTree:
                 #print("resetting try index for: ", current.nextClue.name, "to 0")
                 if not revJourney:
                     #print("I'm sorry, this puzzle is unsolvable with current guess set")
-                    return 1
+                    return 1, None
                 #print("previously visited nodes:")
                 #if revJourney:
                     #for i in revJourney:
@@ -254,15 +180,16 @@ class GraphTree:
             wordChosen = current.synList[current.tryIndex]
             if strategy.insertWord(current.nextClue, wordChosen, puzzle) == 1:
                 #print("problem with inserting word")
-                return 1
+                return 1, None
             current.tryIndex += 1
             #puzzle.print()
             j = current.journeyNames.copy()
             jP = current.journeyPaths.copy()
             j.append(current.nextClue)
             jP.append(current)  # or current.child
+            stepArray.append(copy.deepcopy(puzzle))
             if strategy.checkDone(clues, puzzle) == 0:
-                return 0
+                return 0, stepArray
             #print("before finding next clue")
             path, temparcs, current = self.findNextClue(current)
             current.children.append(Path(path, wordChosen, current, puzzle, temparcs, j))

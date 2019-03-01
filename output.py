@@ -19,7 +19,7 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
    <h1>""" + status + """</h1>
    </head>
    <body>
-   <div style = \"float:left\"><p><h3 style = \"float:left\">Across Clues: </h3><br><br><ul>"""
+   <div style = \"float:left\"><p><h3 style = \"float:left\">Across Clues: </h3><br><br><ul style = \"width: 350px\">"""
    S = header
 
    for i in aClues:
@@ -54,11 +54,15 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
    #button = "<button class=\"btn success\">Success</button>"
 
 
-   form = "<form action=\"/success/\" method=\"post\"><input type=\"hidden\" id=\"puzzlestring\" name=\"puzzlestring\" value=\"" + puzzle1 + "\"><input type =\"hidden\" id\"type\" name=\"type\" value=\"" + puzType +"\"><input type=\"submit\" value= \"Looks good!\"  name=\"button\" id=\"name\" /> </form>"
+   form = "<form action=\"/success/\" method=\"post\"><input type=\"submit\" value= \"Looks good!\"  name=\"button\" id=\"name\" /> </form>"
 
    if status == "Does this look correct?":
         #footer = form + "<button><a href=\"/\">No, I'll fix it</a></button></div>" + "</body></html>"
         footer = form + "<form action=\"/\"> <input type=\"submit\" value= \"No, I'll fix it\"  name=\"button\" id=\"name\" /> </form> </a></button></div>" + "</body></html>"
+   else:
+        footer = "<p><a href=\"/\">Click here to do another one</a></div></p>"
+        if puzType == "synonym":
+            footer = "<form action=\"/steps/\" method=\"post\"><input type=\"submit\" value= \"How'd we get here?\"  name=\"button\" id=\"name\" /> </form>" + footer
    S = S + footer
 
    return S, puzzle1

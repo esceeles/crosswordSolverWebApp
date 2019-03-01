@@ -12,3 +12,5 @@ class model(Model):
         params = [puzzle, type, puzString]
         self.entries.append(params)
         return True
+    def clear(self):
+        self.entries.clear()
