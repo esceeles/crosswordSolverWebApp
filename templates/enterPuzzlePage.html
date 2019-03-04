@@ -2,18 +2,19 @@
         <head>
         <title>Crossword Solver</title>
         <style>
+            body{
+                font-family:"Courier New", Courier, monospace;
+                color: white;
+            }
             h1{
-                color: #E6E6FA;
-                font-style:Courier New;
                 width: 850px;
                 float:left;
             }
             p{
-                 color:#E6E6FA;
+                 color:white;
             }
             h4{
-                 color:#E6E6FA;
-                 font-style:Courier New;
+                 color:white;
             }
             .leftPane{
                 float:left;
@@ -25,12 +26,11 @@
                 margin-left: 50px;
             }
             .samplePic{
-                border: 10px outset #E6E6FA;
+                border: 2px double black;
                 margin-right:100px;
             }
             form{
-                color:#E6E6FA;
-                font-style:Courier New;
+                color:white;
             }
         </style>
         </head>
@@ -44,14 +44,14 @@
                 <h4> Please enter your puzzle in the box below:</h4>
 
                 <div style = "float:right">
-                    <a href="/info/"> <div style = " color:#E6E6FA; font-style:Courier New"> More Info? </div></a>
+                    <a href="/info/"> <div style = "color:white"> More Info? </div></a>
                 </div>
 
                 <form method="post" action=".">
-                    <p><textarea name="puzzle1" rows="20" cols="50" style = "border: 10px outset #E6E6FA"></textarea></p>
-                    <input style = "margin-left: 80px" type="radio" name="type" value="synonym" id="synonym" required> Synonym<br>
-                    <input style = "margin-left: 80px" type="radio" name="type" value="other" id = "other"> Other (beta)<br>
-                    <p style = "margin-left: 80px; position: relative" ><input style = "border: 10px outset #E6E6FA; top: 2px" type="submit" value="Solve it!" /></p>
+                    <p><textarea name="puzzle1" rows="20" cols="50" style = "border: 5px double black"></textarea></p>
+                    <input style = "margin-left: 80px" type="radio" name="type" value="synonym" id="synonym"> Synonym<br>
+                    <input style = "margin-left: 80px" type="radio" name="type" value="other" id = "other" required> Other (beta)<br>
+                    <p style = "margin-left: 80px; position: relative" ><input style = "border: 5px double black; top: 2px" type="submit" value="Solve it!" /></p>
                 </form>
 
 

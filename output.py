@@ -5,7 +5,7 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
    header = """<html>
    <head>
    <style>
-      #wrapper {border: 1px solid black; width: """+ str(sz) + """px; height: """ + str(sz) + """px; margin: 0 auto;}
+      #wrapper {background-color: white; border: 1px solid black; width: """+ str(sz) + """px; height: """ + str(sz) + """px; margin: 0 auto; color:black}
       div {contentEditable: true}
       .filled {width: 28px; height: 28px; background: black; border: 1px solid black; padding: 0; margin: 0; float: left;}
       .empty {width: 28px; height: 28px; border: 1px solid black; padding: 0; margin: 0; float: left;}
@@ -16,10 +16,9 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
       .btn:hover {background: #eee;}
       .success {color: green;}
    </style>
-   <h1>""" + status + """</h1>
    </head>
-   <body>
-   <div style = \"float:left\"><p><h3 style = \"float:left\">Across Clues: </h3><br><br><ul style = \"width: 350px\">"""
+   <body style = \"display:flex; background-color:black; color:white; font-family:"Courier New", Courier, monospace\">
+   <div style = \"float:left\"><h1>""" + status + """</h1><p><h3>Across Clues: </h3><ul style = \"width: 300px\">"""
    S = header
 
    for i in aClues:
@@ -60,6 +59,7 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
         #footer = form + "<button><a href=\"/\">No, I'll fix it</a></button></div>" + "</body></html>"
         footer = form + "<form action=\"/\"> <input type=\"submit\" value= \"No, I'll fix it\"  name=\"button\" id=\"name\" /> </form> </a></button></div>" + "</body></html>"
    else:
+        img = "<img style = \"float:right\" src=\"https://unixtitan.net/images/clip-crossword-3.png\">"
         footer = "<p><a href=\"/\">Click here to do another one</a></div></p>"
         if puzType == "synonym":
             footer = "<form action=\"/steps/\" method=\"post\"><input type=\"submit\" value= \"How'd we get here?\"  name=\"button\" id=\"name\" /> </form>" + footer

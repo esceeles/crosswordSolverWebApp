@@ -6,7 +6,7 @@ def toHTML(stepArray):
    header = """<html>
    <head>
    <style>
-      #wrapper {border: 1px solid black; width: """+ str(sz) + """px; height: """ + str(sz) + """px; margin: 0 auto;}
+      #wrapper {background-color: right; border: 1px solid black; width: """+ str(sz) + """px; height: """ + str(sz) + """px; margin: 0 auto; color: black}
       div {contentEditable: true}
       .filled {width: 28px; height: 28px; background: black; border: 1px solid black; padding: 0; margin: 0; float: left;}
       .empty {width: 28px; height: 28px; border: 1px solid black; padding: 0; margin: 0; float: left;}
@@ -17,13 +17,13 @@ def toHTML(stepArray):
       .btn:hover {background: #eee;}
       .success {color: green;}
    </style>
-   <h1>""" + "Steps: " + """</h1>
+   <h1 style=\"color:white\">""" + "Steps: " + """</h1>
    </head>
-   <body>"""
+   <body style = \"background-color:black\">"""
    S = header
 
    for step in stepArray:
-      S = S + "<p><div id = \"wrapper\"> "
+      S = S + "<p><div style=\"background-color:white\" id = \"wrapper\"> "
       puzzle = step
       for i in range(0, puzzle.size+2):
          for j in range(0, puzzle.size+2):
