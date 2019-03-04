@@ -42,7 +42,7 @@ def toHTML(stepArray):
    #footer = "</div></p>"
 
 
-   S = S + "<p><a href=\"/\">Click here to do another one</a></div></p></body></html>"
+   S = S + "<img style = \"height: 700; display: block; margin-left: auto; margin-right: auto\" src = \"https://unixtitan.net/images/clip-crossword-3.png\"> <p><a href=\"/\">Click here to do another one</a></div></p></body></html>"
    #S = S + footer
 
    return S

@@ -18,7 +18,7 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
    </style>
    </head>
    <body style = \"display:flex; background-color:black; color:white; font-family:"Courier New", Courier, monospace\">
-   <div style = \"float:left\"><h1>""" + status + """</h1><p><h3>Across Clues: </h3><ul style = \"width: 300px\">"""
+   <div style = \"float:left; margin-left: 30px\"><h1>""" + status + """</h1><p><h3>Across Clues: </h3><ul style = \"width: 300px\">"""
    S = header
 
    for i in aClues:
@@ -53,16 +53,16 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
    #button = "<button class=\"btn success\">Success</button>"
 
 
-   form = "<form action=\"/success/\" method=\"post\"><input type=\"submit\" value= \"Looks good!\"  name=\"button\" id=\"name\" /> </form>"
+   form = "<div style = \"float:right; margin-right: 0px\"><form action=\"/success/\" method=\"post\"><input style = \"float:right\" type=\"submit\" value= \"Looks good!\"  name=\"button\" id=\"name\" /> </form>"
 
    if status == "Does this look correct?":
         #footer = form + "<button><a href=\"/\">No, I'll fix it</a></button></div>" + "</body></html>"
-        footer = form + "<form action=\"/\"> <input type=\"submit\" value= \"No, I'll fix it\"  name=\"button\" id=\"name\" /> </form> </a></button></div>" + "</body></html>"
+        footer = form + "<form action=\"/\"> <input style = \"float:right; margin-right: 0px; margin-top:10px\" type=\"submit\" value= \"No, I'll fix it\"  name=\"button\" id=\"name\" /> </form> </a></button></div></div>" + "</body></html>"
    else:
         img = "<img style = \"float:right\" src=\"https://unixtitan.net/images/clip-crossword-3.png\">"
-        footer = "<p><a href=\"/\">Click here to do another one</a></div></p>"
+        footer = "<p style = \"float:right; margin-right:0px;\"><a href=\"/\">Click here to do another one</a></p></div>"
         if puzType == "synonym":
-            footer = "<form action=\"/steps/\" method=\"post\"><input type=\"submit\" value= \"How'd we get here?\"  name=\"button\" id=\"name\" /> </form>" + footer
+            footer = "<p style = \"float:right; margin-right:0px\"><a href=\"/steps/\">How'd we get here?</a></p><br>" + footer
    S = S + footer
 
    return S, puzzle1

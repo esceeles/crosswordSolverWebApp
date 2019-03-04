@@ -25,17 +25,23 @@
                 float:right;
                 margin-left: 50px;
             }
+            .middle{
+                float: right;
+            }
             .samplePic{
-                border: 2px double black;
+                border: 5px dotted white;
                 margin-right:100px;
             }
             form{
                 color:white;
             }
+            .img{
+                height: 350px;
+                width: auto;
+            }
         </style>
         </head>
-            <body style = "display:flex"
-                  background= "https://www.thespruce.com/thmb/rQ-8xi8eb9a6Jj4FEAZJwoBuVIM=/2237x1340/filters:fill(auto,1)/GettyImages-1004261968-5b8d9cb946e0fb0025f5f51b.jpg">
+            <body style = "display:flex; background-color: black">
                 <div class = "leftPane">
                 <h1>Crossword Solver</h1>
                 <p>First enter the puzzle dimension (as a square matrix), followed by a blank line, then list the across clues and down
@@ -43,15 +49,16 @@
                 Black squares are '#', numbered squares are just the number, and empty squares are '_'.</p>
                 <h4> Please enter your puzzle in the box below:</h4>
 
-                <div style = "float:right">
-                    <a href="/info/"> <div style = "color:white"> More Info? </div></a>
+                <div class = "middle">
+                    <img class = "img" src="https://unixtitan.net/images/clip-crossword-4.png" ><br>
+                    <a href="/info/"> <div style = "position: relative; right:0px; float:right"> More Info? </div></a>
                 </div>
 
                 <form method="post" action=".">
-                    <p><textarea name="puzzle1" rows="20" cols="50" style = "border: 5px double black"></textarea></p>
-                    <input style = "margin-left: 80px" type="radio" name="type" value="synonym" id="synonym"> Synonym<br>
-                    <input style = "margin-left: 80px" type="radio" name="type" value="other" id = "other" required> Other (beta)<br>
-                    <p style = "margin-left: 80px; position: relative" ><input style = "border: 5px double black; top: 2px" type="submit" value="Solve it!" /></p>
+                    <p><textarea name="puzzle1" rows="20" cols="32" style = "border: 5px double black"></textarea></p>
+                    <input type="radio" name="type" value="synonym" id="synonym"> Synonym<br>
+                    <input type="radio" name="type" value="other" id = "other" required> Other (beta)
+                    <div style = "position: relative; float: right" ><input style = "border: 5px double black; top: 2px" type="submit" value="Solve it!" /></div>
                 </form>
 
 

@@ -121,10 +121,11 @@ class GraphTree:
                             #print(path, temparcs, current)
                             return path, temparcs, current
 
-    def traverse(self, clues, puzzle):
+    def traverse(self, clues, puzzle, puzType):
         current = self.root
         current.arcList = self.arcList
         stepArray = list()
+        stepArray.clear()
 
         while strategy.checkDone(clues, puzzle) != 0:
             #print("nextClue: ", current.nextClue.name)
@@ -132,26 +133,16 @@ class GraphTree:
             self.makeSynList(current, puzzle)
             # print("after making synList")
             if current.synList == 0 or len(current.synList) == current.tryIndex:
-                #print("######try index overflow or no synList")
-                #print("len of synList: ", len(current.synList))
-                #print("try index: ", current.tryIndex)
                 revJourney = current.journeyPaths.copy()
                 revJourney.reverse()
                 current.tryIndex = 0
-                #print("resetting try index for: ", current.nextClue.name, "to 0")
                 if not revJourney:
                     #print("I'm sorry, this puzzle is unsolvable with current guess set")
                     return 1, None
-                #print("previously visited nodes:")
-                #if revJourney:
-                    #for i in revJourney:
-                        #print(i.nextClue.name)
                 temp = None
                 for i in self.arcList:
                   if i[1].name == current.nextClue.name:
                      temp = i
-                #for i in current.arcList:
-                  #print(i[0].name, i[1].name)
                 current = revJourney[0]
                 if temp not in current.arcList:
                   current.arcList.append(temp)
@@ -173,24 +164,21 @@ class GraphTree:
                      if temp not in current.arcList:
                               current.arcList.append(temp)
                 ###
-                #print("word removed: ", current.nextClue.name)
                 strategy.removeWord(current.nextClue, puzzle)
                 continue
 
             wordChosen = current.synList[current.tryIndex]
             if strategy.insertWord(current.nextClue, wordChosen, puzzle) == 1:
-                #print("problem with inserting word")
                 return 1, None
             current.tryIndex += 1
-            #puzzle.print()
             j = current.journeyNames.copy()
             jP = current.journeyPaths.copy()
             j.append(current.nextClue)
             jP.append(current)  # or current.child
-            stepArray.append(copy.deepcopy(puzzle))
+            if puzType == "synonym":
+                stepArray.append(copy.deepcopy(puzzle))
             if strategy.checkDone(clues, puzzle) == 0:
                 return 0, stepArray
-            #print("before finding next clue")
             path, temparcs, current = self.findNextClue(current)
             current.children.append(Path(path, wordChosen, current, puzzle, temparcs, j))
 
