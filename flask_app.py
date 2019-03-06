@@ -9,7 +9,6 @@ from nocache import nocache
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-m = model()
 
 class hold:
     def __init__(self):
@@ -19,9 +18,12 @@ class hold:
         self.stepArray = None
         self.aClues = None
         self.dClues = None
+        self.form = None
 
 c = hold()
+d = hold()
 
+#main page
 @app.route('/', methods = ['GET', 'POST'])
 @nocache
 def hello_world():
@@ -36,19 +38,25 @@ def hello_world():
         if puzzle1 is not None:
             puzType = str(request.form["type"])
             aClues, dClues, puzzle = inputPuzzle(puzzle1)
+            c.form = request.form
+            c.puzString = c.form["puzzle1"]
             c.puzzle = puzzle
             c.puzString = puzzle1
             c.puzType = puzType
+            c.aClues = aClues
+            c.dClues = dClues
+            d.form = request.form
+            d.puzString = c.form["puzzle1"]
+            d.puzzle = puzzle
+            d.puzString = puzzle1
+            d.puzType = puzType
+            d.aClues = aClues
+            d.dClues = dClues
             if c.puzzle == None or c.puzString == None or c.puzType == None:
                 return "Error with insert"
             if c.puzzle != puzzle or c.puzString != puzzle1 or c.puzType != puzType:
                 return "Copy remained"
-            #while len(model.entries) != 0:
-                #m.entries.clear()
-            #while len(m.entries) == 0:
-                #params = [puzzle, puzType, puzzle1]
-                #m.entries.append(params)
-                #m.insert(puzzle, puzType, puzzle1)
+
             if aClues == "nothing":
                 return render_template('error.html', problem= "You didn't enter anything to process..")
 
@@ -56,13 +64,9 @@ def hello_world():
                 return render_template('error.html', problem= "Please enter an integer dimension as your first element")
 
             puzHTML, strPuzzle = toHTML(puzzle, "Does this look correct?", puzzle1, aClues, dClues, puzType)
-            for i in range(0,3):
+            while c.puzString != puzzle1 or c.puzString is None:
                 c.puzString = puzzle1
-                c.puzzle = puzzle
-                c.puzType = puzType
-            while c.puzString != puzzle1:
-                c.puzString = puzzle1
-            while c.puzzle != puzzle:
+            while c.puzzle is None or c.puzzle != puzzle:
                 c.puzzle = puzzle
             while c.puzType != puzType:
                 c.puzType = puzType
@@ -71,50 +75,40 @@ def hello_world():
     return render_template('enterPuzzlePage.html', errors=errors)
 
 
+#creates output and displays to user
 @app.route('/success/', methods = ['POST', 'GET'])
 @nocache
 def output():
-    #c = m.select()
-    #return c[0][2]
-    """
-    try:
-        puzzle1=c[0][2]
-    except IndexError:
-        try:
-            x = c[0]
-            return x
-        except IndexError:
-            return c
-    """
-    #puzzle1 = c[0][2]
-    #puzType = c[0][1]
-    #return c.puzString
-    puzzle1 = c.puzString
-    puzType = c.puzType
-    result, trash = main(puzzle1, puzType, c)
-    #model.insert(result, None, None)
+    puzzle1 = str(request.form["puzString"])
+    #puzzle1 = c.puzString
+    puzType = str(request.form["puzType"])
+    result, trash = main(puzzle1, puzType, c, d)
     return result
 
 
+#shows the steps taken to get finished product
 @app.route('/steps/', methods = ['POST', 'GET'])
 @nocache
 def steps():
-    #c = m.select()
-    #return c[1][0][0]
-    """
-    try:
-        steps = c[1][0]     #to get second insert into model, first item (result, inserted in output())
-    except IndexError:
-        try:
-            x = c[1]
-            return x
-        except IndexError:
-            return c
-    """
     steps = c.stepArray
+    steps = c.stepArray
+    if steps is None:
+        steps = d.stepArray
+        if steps is None:
+            handle()
+
     result = outputSteps.toHTML(steps)
     return result
 
+#gives user info on project
 @app.route('/info/', methods = ['GET'])
 def info():
     return render_template('info.html')
+
+app.route('/handle/', methods = ['GET', 'POST'])
+def handle():
+    stepArray, trash = main(c.puzString, "handle", c, d)
+    if stepArray is None:
+        return "Fatal Error"
+    result = outputSteps.toHTML(stepArray)
+    return result

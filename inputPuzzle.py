@@ -1,5 +1,6 @@
 import Clue
 
+#reads in the string puzzleFile and creates puzzle and clue objects
 def inputPuzzle(puzzleFile):
    #gets across and down clues and puts into list of number/clue pairs: [0] is num, [1] is clue
    #puts puzzle structure into a 2D array of 1's (empty) and 2's (black)
@@ -7,7 +8,6 @@ def inputPuzzle(puzzleFile):
    dClues = list()
    puzzle = list()
 
-   #return puzzleFile, None, None
    puzzleFile = puzzleFile.split('\n')
    if not puzzleFile[0]:
        return "nothing", None, None
@@ -21,8 +21,9 @@ def inputPuzzle(puzzleFile):
    puzzleFile = newPuzzle[2:]
    count = 0
    i = puzzleFile[count]
+
+   #gets across clues
    while i != '':
-      #print(i, 'across')
       c = i.split(':')
       name = c[0]+'a'
       name = Clue.Clue(c[1], c[0], 'across')
@@ -30,10 +31,10 @@ def inputPuzzle(puzzleFile):
       count += 1
       i = puzzleFile[count]
 
-   #print("done with across")
    count += 1
    i = puzzleFile[count]
 
+   #gets down clues
    while i != '':
       #print(i, 'down')
       c = i.split(':')
@@ -43,11 +44,13 @@ def inputPuzzle(puzzleFile):
       count += 1
       i = puzzleFile[count]
 
-   #print("done with down")
    count += 1
+
+   #creates a padding for easily knowing when we reach the puzzle boundaries
    pad = [Clue.Cell(x, 0, '#') for x in range (0, size+2)]
    puzzle.append(pad)
 
+   #gathers grid information
    for y in range(0, size):
       i = puzzleFile[count]
       i = '# ' +i+ ' #'
@@ -62,16 +65,12 @@ def inputPuzzle(puzzleFile):
    pad = [Clue.Cell(0, i, '#') for i in range (0, size+2)]
 
    puzzle.append(pad)
-   """
-   puz = ""
-   for i in range(0, size + 2):
-      for j in range (0, size + 2):
-        puz = puz + puzzle[i][j].value
-   return puz
-   """
+
+
 
    p = Clue.Puzzle(size, puzzle)
-   #print(i, "done")
+
+   #uses clue and puzzle information to infer the lengths and cell objects for each clue
    for i in aClues:
       for y in range(0, p.size+2):
          for x in range(0, p.size+2):

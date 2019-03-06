@@ -1,13 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 
+#scrapes dictionary.com on a per clue basis and appends that clue to the current synonym list
 def scrapeDictionDotCom(clue):
     length = clue.length
     c = clue.name
     URL = "https://www.dictionary.com/e/crosswordsolver/?query=" + c + "&pattern=&l=" + str(length)
 
     r = requests.get(URL)
-    #name is head cheese. letters are 4
     soup = BeautifulSoup(r.content, 'html5lib')
 
     syns = list()
@@ -24,8 +24,8 @@ def scrapeDictionDotCom(clue):
       i = i.replace(" ", "").replace("-", "").replace("_","")
       if len(i) == clue.length:
          clue.syns.append(i)
-    #return syns
 
+#scrapes crosswordNexus on a per clue basis and appends clue to current synonym list
 def scrapeCrossNexus(clue):
     print(clue.number, clue.direction, clue.name)
     c = clue.name
@@ -46,4 +46,3 @@ def scrapeCrossNexus(clue):
       i = i.replace(" ", "").replace("-", "").replace("_","")
       if len(i) == clue.length:
          clue.syns.append(i)
-    #return syns

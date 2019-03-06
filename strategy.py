@@ -47,16 +47,8 @@ def getSyns(clues, puzzle, dictionary, form):
    #for i in clues:
       #i.syns.sort(key = str.lower, reverse = True)
       #i.syns.sort(key = str.lower)
-"""
-def compress(clues):
-   for clue in clues:
-      clue.tree = HuffmanTree(clue)
-      clue.tree.makeTree()
-      for syn in clue.syns:
-         cmpSyn = clue.tree.encodeText(syn)
-         clue.cmpSyns.append(cmpSyn)
 
-"""
+
 #inserts a word into a puzzle and marks the clue as done. if word conflicts with already placed guess, return 0
 def insertWord(clue, guess, puzzle):
    for idx in range(0, clue.length):            #first check fo no conflict
@@ -90,7 +82,7 @@ def removeWord(clue, puzzle):
             cell.valPlacedBy = None
    clue.done = False
    return 1
-"""
+
 #if there is one left, it inserts it
 def oneLeft(clues, puzzle):
    for i in clues:
@@ -110,7 +102,7 @@ def compareChars(clues, puzzle):
             clue.syns.remove(i)
       removeList.clear()
 
-#looks at all cells in fed clue and checks to see if all empty cells are isolated and thus can be filled with whatever syn/s are left
+#looks at all cells in clue and checks to see if all empty cells are isolated and thus can be filled with whatever syn/s are left
 def checkIsolated(clue, puzzle):
    isolated = True
    for cell in clue.cells:
@@ -155,7 +147,7 @@ def combine(copyRemaining, puzzle, iterations, accum, combinations):            
       else:
          combine(copyRemaining[1:], puzzle, iterations, item, combinations)
 
-"""
+
 def checkDone(clues, puzzle):
 #checking if done and showing whats left
    finished = True

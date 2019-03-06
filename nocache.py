@@ -1,3 +1,6 @@
+#cited from https://arusahni.net/blog/2014/03/flask-nocache.html
+#this wrapper should clear the cache
+
 from flask import make_response
 from functools import wraps, update_wrapper
 from datetime import datetime

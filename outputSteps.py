@@ -1,6 +1,14 @@
-def toHTML(stepArray):
+import flask_app
+#uses puzzle information from step array to create an graphical output of what steps were taken to complete the puzzle
 
-   puzzle = stepArray[0]
+def toHTML(stepArray):
+   if stepArray is None:
+       return "Fatal Error <br><a href ='/handle/'>Retry</a>", None
+   try:
+      puzzle = stepArray[0]
+   except IndexError:
+      flask_app.handle()
+      return "Fatal Error <br><a href ='/handle/'>Retry</a>", None
    sz = (puzzle.size+2) * 30
 
    header = """<html>

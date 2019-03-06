@@ -1,33 +1,21 @@
 import copy
-#import math
 import strategy
-#import heapq
-import collections
-class Queue:
-   def __init__(self):
-        self.elements = collections.deque()
 
-   def empty(self):
-        return len(self.elements) == 0
-
-   def put(self, x):
-        self.elements.append(x)
-
-   def get(self):
-        return self.elements.popleft()
-
-
+#holds the puzzle information as a graph
 class GraphTree:
     def __init__(self, nextClue, puzzle):
-        self.root = Path(nextClue, None, None, puzzle, None,
-                         list())  # root will be empty (value wise) but will hold the clue for the next syns/nexts
+        # root will be empty (value wise) but will hold the clue for the next syns/nexts
+        self.root = Path(nextClue, None, None, puzzle, None, list())
         self.arcList = list()
         self.edges = dict()
         self.wordToClue = dict()
         self.graph = list()
+
+    #returns neighbors of vertex
     def neighbors(self, id):
         return self.edges[id]
 
+    #finds all edges/arcs for puzzle
     def findAllArcs(self, clues):
         for clue in clues:
             if len(clue.xCells) > 0:
@@ -51,16 +39,12 @@ class GraphTree:
                             else:
                                 self.edges[a.name].append(b.name)
 
-
+    #finds feasible guesses for clue based on information already in puzzle
     def makeSynList(self, current, puzzle):
-        #print("making syn list")
         current.nextClue.updateCells(puzzle)
         current.nextClue.print()
-        #for i in current.nextClue.cells:
-            #print(i.value)
         removeList = list()
         current.synList = current.nextClue.syns.copy()
-        #print(current.synList)
         for syn in current.synList:
             for idx, c in enumerate(current.nextClue.cells):
                 if c.value.isalpha() and syn[idx] != c.value:
@@ -69,16 +53,11 @@ class GraphTree:
             if i in current.synList:
                 current.synList.remove(i)
         removeList.clear()
-        #print(current.synList)
-        #print("end of making synList")
 
+    #finds the next clue to process based on arcs in graph
     def findNextClue(self, current):
-        #print("finding next clue")
         path = None
         temparcs = current.arcList.copy()
-        #print("current arcList")
-        #for i in temparcs:
-            #print(i[0].name, i[1].name)
         for i in temparcs:
             if i[0] == current.nextClue and i[1] not in current.journeyNames:
                 path = i[1]
@@ -93,19 +72,16 @@ class GraphTree:
             path, temparcs, current = self.backtrack(current)
             return path, temparcs, current
 
+    #finds next clue to process when you've completed all the current node's arcs
     def backtrack(self, current):
-        #print("backtracking")
         revJourneyNames = current.journeyNames.copy()
         revJourneyPaths = current.journeyPaths.copy()
         revJourneyNames.reverse()
         revJourneyPaths.reverse()
         path = None
         temparcs = current.arcList.copy()
-        #print(len(temparcs))
-        #print(len(revJourneyNames))
         for prev in revJourneyNames:
             for i in temparcs:
-                #print(i[0].name, i[1].name)
                 if i[0] == prev and i[1] not in current.journeyNames:
                     for j in revJourneyPaths:
                         if j.nextClue == prev:
@@ -118,9 +94,9 @@ class GraphTree:
                             old = current
                             current = j
                             current.arcList = old.arcList
-                            #print(path, temparcs, current)
                             return path, temparcs, current
 
+    #traverses the graph and finds a solution
     def traverse(self, clues, puzzle, puzType):
         current = self.root
         current.arcList = self.arcList
@@ -128,16 +104,15 @@ class GraphTree:
         stepArray.clear()
 
         while strategy.checkDone(clues, puzzle) != 0:
-            #print("nextClue: ", current.nextClue.name)
 
             self.makeSynList(current, puzzle)
-            # print("after making synList")
+
+            #removes words and backtracks when a dead end is reached
             if current.synList == 0 or len(current.synList) == current.tryIndex:
                 revJourney = current.journeyPaths.copy()
                 revJourney.reverse()
                 current.tryIndex = 0
                 if not revJourney:
-                    #print("I'm sorry, this puzzle is unsolvable with current guess set")
                     return 1, None
                 temp = None
                 for i in self.arcList:
@@ -147,7 +122,6 @@ class GraphTree:
                 if temp not in current.arcList:
                   current.arcList.append(temp)
 
-               ####
                 needList = list()
                 for i in clues:
                   if i.done == False:
@@ -163,7 +137,7 @@ class GraphTree:
                            temp = z
                      if temp not in current.arcList:
                               current.arcList.append(temp)
-                ###
+
                 strategy.removeWord(current.nextClue, puzzle)
                 continue
 
@@ -174,7 +148,7 @@ class GraphTree:
             j = current.journeyNames.copy()
             jP = current.journeyPaths.copy()
             j.append(current.nextClue)
-            jP.append(current)  # or current.child
+            jP.append(current)
             if puzType == "synonym":
                 stepArray.append(copy.deepcopy(puzzle))
             if strategy.checkDone(clues, puzzle) == 0:
@@ -186,7 +160,7 @@ class GraphTree:
             current.children[current.childCount].journeyPaths = jP
             current = current.children[current.childCount]
 
-
+#holds path information for traversal
 class Path:
     def __init__(self, nextClue, value, parent, puzzle, arcList, journey):
         self.parentCount = -1
@@ -201,7 +175,7 @@ class Path:
         self.journeyPaths = list()
         self.journeyNames = journey  # need to find a way to track all the nodes that have come before
 
-
+#finds the least connected node to start the search
 def findLeastConnected(clues,
                        puzzle):  # might want to do "most connected". why else would i want one from the middle???
     leastConnected = list()

@@ -9,13 +9,35 @@ import outputSteps
 from threading import Thread
 from beautifulThreads import scrapeDictionDotCom, scrapeCrossNexus
 
-def main(PUZZ, puzType, m):
-   PUZZ = m.puzString
-   puzType = m.puzType
-   aClues, dClues, puzzle = inputPuzzle(PUZZ)
+def main(PUZZ, puzType, m, n):
+   m.puzString = PUZZ
+   m.puzType = puzType
+   puzzle = m.puzzle
+   aClues = m.aClues
+   dClues = m.dClues
+   flag = False
+   if puzType == "handle":
+       flag = True
+       puzType = "synonym"
+
+   if puzzle is None:
+       puzzle = n.puzzle
+       m.puzzle = puzzle
+       if puzzle is None:
+            aClues, dClues, puzzle = inputPuzzle(PUZZ)
+            m.puzzle = puzzle
+            n.puzzle = puzzle
+            m.aClues = aClues
+            n.aClues = aClues
+            m.dClues = dClues
+            n.dClues = dClues
 
    clues = aClues + dClues
 
+   if clues is None or puzzle is None or puzType is None:
+       return "Sorry, there was a Fatal Error <br><a href ='/'>Please enter your puzzle again</a>", None
+
+   #if a synonym puzzle, get guesses from dictionary
    if puzType == "synonym":
         dictionary = td.dictionary         #moby thes saved as python dict variable. 'd' for getSyns. doesn't have everything as key
 
@@ -30,7 +52,9 @@ def main(PUZZ, puzType, m):
         dictionary = importDict.importAUR(mobyPath)
         strategy.getSyns(inNeed, puzzle, dictionary, 'l')
 
+   #if "other" puzzle, get guesses from databases
    else:
+        #uses threading to speed up API scraping
         threads = []
         processB = Thread(target=strategy.getSyns, args=[aClues, puzzle, 'web', 'cn'])
         processC= Thread(target=strategy.getSyns, args=[dClues, puzzle, 'web', 'cn'])
@@ -50,15 +74,21 @@ def main(PUZZ, puzType, m):
 
    least= ai.findLeastConnected(clues, puzzle)
 
+   #creates a graph using puzzle data with the root as the least connected clue
    G = ai.GraphTree(least[0], puzzle)
    G.findAllArcs(clues)
 
+   if clues is None or puzzle is None or puzType is None:
+      return "Sorry, there was a Fatal Error <br><a href ='/'>Please enter your puzzle again</a>", None
 
+   #traverses the graph once to see if all guesses have been placed correctly
    status, stepArray = G.traverse(clues, puzzle, puzType)
+
+   #if no correct placement is found, will try to solve puzzle leaving one word out
+   #due to the intensely overlapped nature of puzzle, can still solve most with only one correct guess missing
    if status == 1:
       for i in range(0, len(clues)):
          tempR = clues[i]
-         #print("clue removed: ", tempR.name)
          clues.remove(tempR)
          least = ai.findLeastConnected(clues, puzzle)
          R = ai.GraphTree(least[0], puzzle)
@@ -71,13 +101,21 @@ def main(PUZZ, puzType, m):
    if strategy.checkDone == 1:
       return "I'm sorry, this puzzle is unsolvable with our current database"
 
-   if puzType == "synonym":
-      #model.clear()
-      #m.insert(stepArray, "Steps: ", PUZZ)
-      for i in range(0, 4):
-         m.stepArray = stepArray
-      while m.stepArray != stepArray:
-         m.stepArray = stepArray
-   ## for normal output:
+   #adds step array to held object
+
+
+   #while m.stepArray != stepArray and m.stepArray != n.stepArray:
+   m.stepArray = stepArray
+   n.stepArray = stepArray
+
+   if m.stepArray is None:
+       return "error in main", None
+
+   if flag == True:
+       return stepArray, None
+
    S = toHTML(puzzle, "Solved Puzzle: ", PUZZ, aClues, dClues, puzType)
    return S
+
+
+

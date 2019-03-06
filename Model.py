@@ -1,3 +1,5 @@
+#cited: Wu-Chang's CS 410 slides
+
 class Model():
     def select(self):
         """gets all entries from the database

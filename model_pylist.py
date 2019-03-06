@@ -1,3 +1,6 @@
+#for holding app information persistently
+#inheritted from parent Model class, which is cited from Wu-Chang's 410 slides
+
 from Model import Model
 
 class model(Model):

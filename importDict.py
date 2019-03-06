@@ -1,6 +1,8 @@
 import csv
 import unicodedata
+#pulls in information from local databases for synonym puzzles
 
+#reads in CSV file
 def importCSV(csvfile):
 
    #reads in csv file as newdict
@@ -18,6 +20,7 @@ def importCSV(csvfile):
    #new dict holds the "Clue: synonym" pair with unicode encoding...
    return newdict
 
+#reads in thesausus as .aur file
 def importAUR(aurfile):
    dictionary = list()
    with open(aurfile) as infile:

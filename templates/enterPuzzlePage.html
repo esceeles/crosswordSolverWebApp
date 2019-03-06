@@ -5,6 +5,8 @@
             body{
                 font-family:"Courier New", Courier, monospace;
                 color: white;
+                display:flex;
+                background-color: black;
             }
             h1{
                 width: 850px;
@@ -39,9 +41,17 @@
                 height: 350px;
                 width: auto;
             }
+            .sub{
+                position: relative;
+                float: right;
+            }
+            .bttn{
+                border: 5px double black;
+                top: 2px;
+            }
         </style>
         </head>
-            <body style = "display:flex; background-color: black">
+            <body>
                 <div class = "leftPane">
                 <h1>Crossword Solver</h1>
                 <p>First enter the puzzle dimension (as a square matrix), followed by a blank line, then list the across clues and down
@@ -58,7 +68,7 @@
                     <p><textarea name="puzzle1" rows="20" cols="32" style = "border: 5px double black"></textarea></p>
                     <input type="radio" name="type" value="synonym" id="synonym"> Synonym<br>
                     <input type="radio" name="type" value="other" id = "other" required> Other (beta)
-                    <div style = "position: relative; float: right" ><input style = "border: 5px double black; top: 2px" type="submit" value="Solve it!" /></div>
+                    <div class = "sub" ><input class = "buttn" type="submit" value="Solve it!" /></div>
                 </form>
 
 

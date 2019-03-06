@@ -1,3 +1,5 @@
+#uses puzzle and clue information to create a graphical display of the completed puzzle
+
 def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
 
    sz = (puzzle.size+2) * 30
@@ -21,6 +23,7 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
    <div style = \"float:left; margin-left: 30px\"><h1>""" + status + """</h1><p><h3>Across Clues: </h3><ul style = \"width: 300px\">"""
    S = header
 
+   #prints across and down clues
    for i in aClues:
        S = S + "<li>" + i.number + ": " + i.name + "</li>"
 
@@ -32,6 +35,7 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
 
    S = S + "</ul></p></div><p><div id = \"wrapper\"> "
 
+   #creates the grid based on cell values
    for i in range(0, puzzle.size+2):
       for j in range(0, puzzle.size+2):
          if puzzle.grid[i][j].value == '#':
@@ -50,14 +54,19 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
 
    S = S + "</body></html><div style=\"float:right\"> "
 
-   #button = "<button class=\"btn success\">Success</button>"
+   form = """<div style = \"float:right; margin-right: 0px\"><form action=\"/success/\" method=\"post\">
+   <input style = \"float:right\" type=\"submit\" value= \"Looks good!\"  name=\"button\" id=\"name\" />
+   <input type = \"hidden\" id = \"puzString\" name = \"puzString\" value = \"""" + puzzle1 + """\">
+   <input type = \"hidden\" id = \"puzType\" name = \"puzType\" value = \"""" + puzType + "\"></form>"
 
-
-   form = "<div style = \"float:right; margin-right: 0px\"><form action=\"/success/\" method=\"post\"><input style = \"float:right\" type=\"submit\" value= \"Looks good!\"  name=\"button\" id=\"name\" /> </form>"
-
+   #This will be used when verifying the puzzle, before solving
    if status == "Does this look correct?":
         #footer = form + "<button><a href=\"/\">No, I'll fix it</a></button></div>" + "</body></html>"
-        footer = form + "<form action=\"/\"> <input style = \"float:right; margin-right: 0px; margin-top:10px\" type=\"submit\" value= \"No, I'll fix it\"  name=\"button\" id=\"name\" /> </form> </a></button></div></div>" + "</body></html>"
+        footer = form + """<form action=\"/\"> <input style = \"float:right; margin-right: 0px; margin-top:10px\"
+        type=\"submit\" value= \"No, I'll fix it\"  name=\"button\" id=\"name\" /> </form> </a></button></div></div>
+        </body></html>"""
+
+   #this will be used for outputting the final product
    else:
         img = "<img style = \"float:right\" src=\"https://unixtitan.net/images/clip-crossword-3.png\">"
         footer = "<p style = \"float:right; margin-right:0px;\"><a href=\"/\">Click here to do another one</a></p></div>"
@@ -66,8 +75,3 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
    S = S + footer
 
    return S, puzzle1
-
-
-
-
-

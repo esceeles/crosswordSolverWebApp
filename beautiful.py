@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+#scrapes dictionary.com as a batch of clues
 def scrapeDictionDotCom(clue):
     length = clue.length
     c = clue.name
@@ -19,9 +20,9 @@ def scrapeDictionDotCom(clue):
     for i in range(2, l, 2):
         x = (soup.findAll("div", {"class": "solver-cell"})[i].text)
         syns.append(x)
-    #print(syns)
     return syns
 
+#scrapes crosswordnexus as a batch of clues
 def scrapeCrossNexus(clue):
     #print(clue.number, clue.direction, clue.name)
     c = clue.name
@@ -36,6 +37,4 @@ def scrapeCrossNexus(clue):
     for i in range(18, l):
         temp = x[i].string
         syns.append(temp)
-        #print(temp)
-    #print(syns)
     return syns
