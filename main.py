@@ -16,15 +16,20 @@ def main(PUZZ, puzType, m, n):
    aClues = m.aClues
    dClues = m.dClues
    flag = False
+
    if puzType == "handle":
        flag = True
        puzType = "synonym"
+       del m.puzzle
+       del n.puzzle
 
    if puzzle is None:
        puzzle = n.puzzle
        m.puzzle = puzzle
        if puzzle is None:
             aClues, dClues, puzzle = inputPuzzle(PUZZ)
+            if aClues == "Error":
+                return "Sorry, there was a Fatal Error <br><a href ='/'>Please enter your puzzle again</a>", None
             m.puzzle = puzzle
             n.puzzle = puzzle
             m.aClues = aClues
@@ -33,9 +38,6 @@ def main(PUZZ, puzType, m, n):
             n.dClues = dClues
 
    clues = aClues + dClues
-
-   if clues is None or puzzle is None or puzType is None:
-       return "Sorry, there was a Fatal Error <br><a href ='/'>Please enter your puzzle again</a>", None
 
    #if a synonym puzzle, get guesses from dictionary
    if puzType == "synonym":
@@ -71,7 +73,6 @@ def main(PUZZ, puzType, m, n):
         for process in threads:
             process.join()
 
-
    least= ai.findLeastConnected(clues, puzzle)
 
    #creates a graph using puzzle data with the root as the least connected clue
@@ -82,7 +83,13 @@ def main(PUZZ, puzType, m, n):
       return "Sorry, there was a Fatal Error <br><a href ='/'>Please enter your puzzle again</a>", None
 
    #traverses the graph once to see if all guesses have been placed correctly
-   status, stepArray = G.traverse(clues, puzzle, puzType)
+
+   allReturn = G.traverse(clues, puzzle, puzType)
+   if len(allReturn) < 3:
+       return "Sorry, there was a Fatal Error <br><a href ='/'>Please enter your puzzle again</a>", None
+   status = allReturn[0]
+   stepArray = allReturn[1]
+   guessArray = allReturn[2]
 
    #if no correct placement is found, will try to solve puzzle leaving one word out
    #due to the intensely overlapped nature of puzzle, can still solve most with only one correct guess missing
@@ -93,7 +100,7 @@ def main(PUZZ, puzType, m, n):
          least = ai.findLeastConnected(clues, puzzle)
          R = ai.GraphTree(least[0], puzzle)
          R.findAllArcs(clues)
-         status, stepArray = R.traverse(clues, puzzle, puzType)
+         status, stepArray, guessArray = R.traverse(clues, puzzle, puzType)
          if status == 0:
             break
          clues.insert(i, tempR)
@@ -102,14 +109,10 @@ def main(PUZZ, puzType, m, n):
       return "I'm sorry, this puzzle is unsolvable with our current database"
 
    #adds step array to held object
-
-
-   #while m.stepArray != stepArray and m.stepArray != n.stepArray:
    m.stepArray = stepArray
    n.stepArray = stepArray
-
-   if m.stepArray is None:
-       return "error in main", None
+   m.guessArray = guessArray
+   n.guessArray = guessArray
 
    if flag == True:
        return stepArray, None

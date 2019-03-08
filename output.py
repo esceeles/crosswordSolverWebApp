@@ -32,7 +32,6 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
    for i in dClues:
        S = S + "<li>" + i.number + ": " + i.name + "</li>"
 
-
    S = S + "</ul></p></div><p><div id = \"wrapper\"> "
 
    #creates the grid based on cell values
@@ -48,9 +47,7 @@ def toHTML(puzzle, status, puzzle1, aClues, dClues, puzType):
          else:
             S = S + "<div class = \"empty\"></div>""\n"
 
-
    footer = " <p><a href=\"/\">Click here to do another one</a></div></p>"
-
 
    S = S + "</body></html><div style=\"float:right\"> "
 

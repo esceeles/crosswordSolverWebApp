@@ -29,7 +29,10 @@ def inputPuzzle(puzzleFile):
       name = Clue.Clue(c[1], c[0], 'across')
       aClues.append(name)
       count += 1
-      i = puzzleFile[count]
+      try:
+        i = puzzleFile[count]
+      except IndexError:
+          return "Error", None, None
 
    count += 1
    i = puzzleFile[count]
@@ -66,8 +69,6 @@ def inputPuzzle(puzzleFile):
 
    puzzle.append(pad)
 
-
-
    p = Clue.Puzzle(size, puzzle)
 
    #uses clue and puzzle information to infer the lengths and cell objects for each clue
@@ -93,8 +94,6 @@ def inputPuzzle(puzzleFile):
          column = j.column
          p.grid[row][column].numClues += 1
 
-
-
    #makes list of intersecting cells for each clue and for puzzle in total
    for i in p.grid:
       for j in i:
@@ -102,5 +101,16 @@ def inputPuzzle(puzzleFile):
             for clue in j.clues:
                clue.xCells.append(j)
                p.xCells.append(j)
+
+   #check that the board and numbers for clues all align
+   for clue in aClues + dClues:
+      num = str(clue.number)
+      Found = False
+      for i in range (0, p.size+2):
+          for j in range (0, p.size+2):
+              if p.grid[i][j].value == num:
+                  Found = True
+      if Found == False:
+          return "missing", None, None
 
    return (aClues, dClues, p)

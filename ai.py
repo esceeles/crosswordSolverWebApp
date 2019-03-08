@@ -42,7 +42,7 @@ class GraphTree:
     #finds feasible guesses for clue based on information already in puzzle
     def makeSynList(self, current, puzzle):
         current.nextClue.updateCells(puzzle)
-        current.nextClue.print()
+        #current.nextClue.print()
         removeList = list()
         current.synList = current.nextClue.syns.copy()
         for syn in current.synList:
@@ -102,6 +102,8 @@ class GraphTree:
         current.arcList = self.arcList
         stepArray = list()
         stepArray.clear()
+        guessArray = list()
+        guessArray.clear()
 
         while strategy.checkDone(clues, puzzle) != 0:
 
@@ -113,7 +115,7 @@ class GraphTree:
                 revJourney.reverse()
                 current.tryIndex = 0
                 if not revJourney:
-                    return 1, None
+                    return 1, None, None
                 temp = None
                 for i in self.arcList:
                   if i[1].name == current.nextClue.name:
@@ -143,7 +145,7 @@ class GraphTree:
 
             wordChosen = current.synList[current.tryIndex]
             if strategy.insertWord(current.nextClue, wordChosen, puzzle) == 1:
-                return 1, None
+                return 1, None, None
             current.tryIndex += 1
             j = current.journeyNames.copy()
             jP = current.journeyPaths.copy()
@@ -151,8 +153,13 @@ class GraphTree:
             jP.append(current)
             if puzType == "synonym":
                 stepArray.append(copy.deepcopy(puzzle))
+                l = copy.deepcopy(current.synList)
+                m = current.nextClue.number + " " + current.nextClue.direction + ": " + current.nextClue.name
+                l.insert(0, str(m))
+                guessArray.append(l)
+                del l
             if strategy.checkDone(clues, puzzle) == 0:
-                return 0, stepArray
+                return 0, stepArray, guessArray
             path, temparcs, current = self.findNextClue(current)
             current.children.append(Path(path, wordChosen, current, puzzle, temparcs, j))
 

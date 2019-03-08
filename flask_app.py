@@ -1,9 +1,8 @@
 from main import main
 from output import toHTML
-from flask import Flask
+from flask import Flask, make_response
 from flask import request, render_template
 from inputPuzzle import inputPuzzle
-from model_pylist import model
 import outputSteps
 from nocache import nocache
 
@@ -16,6 +15,7 @@ class hold:
         self.puzString = None
         self.puzType = None
         self.stepArray = None
+        self.guessArray = None
         self.aClues = None
         self.dClues = None
         self.form = None
@@ -29,6 +29,7 @@ d = hold()
 def hello_world():
     errors = ""
     if request.method == "POST":
+
         puzzle1 = None
         try:
             puzzle1 = str(request.form["puzzle1"])
@@ -38,6 +39,8 @@ def hello_world():
         if puzzle1 is not None:
             puzType = str(request.form["type"])
             aClues, dClues, puzzle = inputPuzzle(puzzle1)
+            #inputting puzzle information into two different objects because pythonAnywhere hosting site
+            #seems to have issues with objects persisting over different files and functions
             c.form = request.form
             c.puzString = c.form["puzzle1"]
             c.puzzle = puzzle
@@ -52,10 +55,6 @@ def hello_world():
             d.puzType = puzType
             d.aClues = aClues
             d.dClues = dClues
-            if c.puzzle == None or c.puzString == None or c.puzType == None:
-                return "Error with insert"
-            if c.puzzle != puzzle or c.puzString != puzzle1 or c.puzType != puzType:
-                return "Copy remained"
 
             if aClues == "nothing":
                 return render_template('error.html', problem= "You didn't enter anything to process..")
@@ -63,15 +62,15 @@ def hello_world():
             if aClues == "notNum":
                 return render_template('error.html', problem= "Please enter an integer dimension as your first element")
 
+            if aClues == "missing":
+                return render_template('error.html', problem= "Your clues don't match with the numbers on the grid")
+
             puzHTML, strPuzzle = toHTML(puzzle, "Does this look correct?", puzzle1, aClues, dClues, puzType)
-            while c.puzString != puzzle1 or c.puzString is None:
-                c.puzString = puzzle1
-            while c.puzzle is None or c.puzzle != puzzle:
-                c.puzzle = puzzle
-            while c.puzType != puzType:
-                c.puzType = puzType
+
             return puzHTML
 
+
+    #return resp
     return render_template('enterPuzzlePage.html', errors=errors)
 
 
@@ -79,8 +78,8 @@ def hello_world():
 @app.route('/success/', methods = ['POST', 'GET'])
 @nocache
 def output():
+
     puzzle1 = str(request.form["puzString"])
-    #puzzle1 = c.puzString
     puzType = str(request.form["puzType"])
     result, trash = main(puzzle1, puzType, c, d)
     return result
@@ -97,7 +96,7 @@ def steps():
         if steps is None:
             handle()
 
-    result = outputSteps.toHTML(steps)
+    result = outputSteps.toHTML(steps, c, d)
     return result
 
 #gives user info on project
@@ -105,10 +104,12 @@ def steps():
 def info():
     return render_template('info.html')
 
-app.route('/handle/', methods = ['GET', 'POST'])
+@app.route('/handle/', methods = ['GET', 'POST'])
 def handle():
+    if c.puzString is None:
+        return "Server lost your data, Please try again"
     stepArray, trash = main(c.puzString, "handle", c, d)
     if stepArray is None:
         return "Fatal Error"
-    result = outputSteps.toHTML(stepArray)
+    result = outputSteps.toHTML(stepArray, c, d)
     return result

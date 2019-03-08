@@ -136,7 +136,8 @@ def combinatoricExplosion(clues, puzzle):
          oneLeft(clues, puzzle)
          return 0
 
-def combine(copyRemaining, puzzle, iterations, accum, combinations):                #this needs citation: duanev, stackOverflow
+#cited: user: duanev on stackOverflow
+def combine(copyRemaining, puzzle, iterations, accum, combinations):
    last = (len(copyRemaining) == 1)
    n = len(copyRemaining[0].syns)
    for i in range (n):
@@ -162,8 +163,6 @@ def checkDone(clues, puzzle):
       return 0
    else:
       print("We've still got some work to do.")
-      #printRemainders(clues, puzzle)
-      #puzzle.print()
 
    return 1
 

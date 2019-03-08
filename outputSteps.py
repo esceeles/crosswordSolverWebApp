@@ -1,14 +1,14 @@
 import flask_app
 #uses puzzle information from step array to create an graphical output of what steps were taken to complete the puzzle
 
-def toHTML(stepArray):
+def toHTML(stepArray, c, d):
    if stepArray is None:
-       return "Fatal Error <br><a href ='/handle/'>Retry</a>", None
+       return "Puzzle lost <br><a href =\'/\'>Please enter puzzle again</a>", None
    try:
       puzzle = stepArray[0]
    except IndexError:
       flask_app.handle()
-      return "Fatal Error <br><a href ='/handle/'>Retry</a>", None
+      return "Puzzle lost <br><a href =\'/\'>Please enter puzzle again</a>", None
    sz = (puzzle.size+2) * 30
 
    header = """<html>
@@ -30,7 +30,16 @@ def toHTML(stepArray):
    <body style = \"background-color:black\">"""
    S = header
 
-   for step in stepArray:
+   for idx, step in enumerate(stepArray):
+      if c.guessArray is not None:
+        if c.guessArray[idx] is not None:
+            S = S + "<p>"
+            for edx, guess in enumerate(c.guessArray[idx]):
+                if edx == 0:
+                    S = S + guess + "<br>"
+                else:
+                    S = S + guess + ". "
+            S = S + "</p>"
       S = S + "<p><div style=\"background-color:white\" id = \"wrapper\"> "
       puzzle = step
       for i in range(0, puzzle.size+2):
@@ -46,11 +55,8 @@ def toHTML(stepArray):
                 S = S + "<div class = \"empty\"></div>""\n"
       S = S + "</div></p><br>"
 
-
-   #footer = "</div></p>"
-
-
-   S = S + "<img style = \"height: 700; display: block; margin-left: auto; margin-right: auto\" src = \"https://unixtitan.net/images/clip-crossword-3.png\"> <p><a href=\"/\">Click here to do another one</a></div></p></body></html>"
-   #S = S + footer
+   S = S + """<img style = \"height: 700; display: block; margin-left: auto; margin-right: auto\"
+   src = \"https://unixtitan.net/images/clip-crossword-3.png\"> <p><a href=\"/\">Click here to do another
+   one</a></div></p></body></html>"""
 
    return S
