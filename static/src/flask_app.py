@@ -113,7 +113,3 @@ def handle():
         return "Fatal Error"
     result = outputSteps.toHTML(stepArray, c, d)
     return result
-
-@app.route('/index/', methods = ['GET', 'POST'])
-def index():
-    return render_template('index.html')
