@@ -8,6 +8,7 @@ import textdictionary as td
 import outputSteps
 from threading import Thread
 from beautifulThreads import scrapeDictionDotCom, scrapeCrossNexus
+from importDict import RegexDict
 
 def main(PUZZ, puzType, m, n):
    m.puzString = PUZZ
@@ -58,15 +59,12 @@ def main(PUZZ, puzType, m, n):
    else:
         #uses threading to speed up API scraping
         threads = []
-        processB = Thread(target=strategy.getSyns, args=[aClues, puzzle, 'web', 'cn'])
-        processC= Thread(target=strategy.getSyns, args=[dClues, puzzle, 'web', 'cn'])
-        processB.start()
-        processC.start()
-        threads.append(processB)
-        threads.append(processC)
 
         for clue in clues:
             processA = Thread(target=scrapeDictionDotCom, args=[clue])
+            processB = Thread(target=scrapeCrossNexus, args=[clue])
+            processB.start()
+            threads.append(processB)
             processA.start()
             threads.append(processA)
 
@@ -85,6 +83,8 @@ def main(PUZZ, puzType, m, n):
    #traverses the graph once to see if all guesses have been placed correctly
 
    allReturn = G.traverse(clues, puzzle, puzType)
+   if allReturn is None:
+       return "Sorry, there was a Fatal Error <br><a href ='/'>Please enter your puzzle again</a>", None
    if len(allReturn) < 3:
        return "Sorry, there was a Fatal Error <br><a href ='/'>Please enter your puzzle again</a>", None
    status = allReturn[0]
@@ -116,6 +116,67 @@ def main(PUZZ, puzType, m, n):
 
    if flag == True:
        return stepArray, None
+
+   #last ditch effort incase the above doesn't work:
+   if strategy.checkDone(clues, puzzle) != 0:
+      strategy.oneLeft(clues, puzzle)
+      count = 0
+
+      #try oneLeft/compareChars approach to narrow down what's missing in puzzle
+      while strategy.checkDone(clues, puzzle) != 0 and count < 11:
+         strategy.compareChars(clues, puzzle)
+         strategy.oneLeft(clues,puzzle)
+         count += 1
+
+      if strategy.checkDone(clues, puzzle) == 0:
+         S = toHTML(puzzle, "Solved Puzzle: ", PUZZ, aClues, dClues, puzType)
+         return S
+
+      #narrow down who's still actually not done based on grid
+      for clue in clues:
+         clue.done = True
+         for cell in clue.cells:
+            if cell.value.isalpha():
+               continue
+            else:
+               clue.done = False
+
+      notDone = list()
+      for clue in clues:
+         if clue.done != True:
+            notDone.append(clue)
+
+      #if we still don't have an answer, try finding dictionary words that fit
+      for clue in notDone:
+         clue.reg = ""
+         for cell in clue.cells:
+            if cell.value.isalpha():
+                clue.reg = clue.reg + cell.value
+            else:
+                clue.reg = clue.reg + "."
+
+      oxPath = "/home/esceeles/mysite/Oxford.txt"
+      D = importDict.importDict(oxPath)
+      T = td.dictionary
+      words = RegexDict(D)
+      syns = RegexDict(T)
+
+      for clue in notDone:
+         for word in words[clue.reg]:
+            if len(word) == clue.length and word not in clue.syns:
+                clue.syns.append(word.upper())
+         for syn in syns[clue.reg]:
+            if len(syn) == clue.length and syn not in clue.syns:
+                clue.syns.append(syn.upper())
+
+      #try traversing one last time
+      status = G.traverse(clues, puzzle, puzType)
+      if status == 0:
+         S = toHTML(puzzle, "Solved Puzzle: ", PUZZ, aClues, dClues, puzType)
+         return S
+      strategy.oneLeft(clues, puzzle)
+      strategy.compareChars(clues, puzzle)
+      strategy.oneLeft(clues, puzzle)
 
    S = toHTML(puzzle, "Solved Puzzle: ", PUZZ, aClues, dClues, puzType)
    return S

@@ -69,7 +69,14 @@ class GraphTree:
                 return path, temparcs, current
 
         if path == None:
-            path, temparcs, current = self.backtrack(current)
+            ret = self.backtrack(current)
+            if ret is None:
+                return 2, None, None
+            else:
+                path = ret[0]
+                temparcs = ret[1]
+                current = ret[2]
+
             return path, temparcs, current
 
     #finds next clue to process when you've completed all the current node's arcs
@@ -161,6 +168,8 @@ class GraphTree:
             if strategy.checkDone(clues, puzzle) == 0:
                 return 0, stepArray, guessArray
             path, temparcs, current = self.findNextClue(current)
+            if path == 2:
+                return 2, None, None
             current.children.append(Path(path, wordChosen, current, puzzle, temparcs, j))
 
             current.childCount += 0

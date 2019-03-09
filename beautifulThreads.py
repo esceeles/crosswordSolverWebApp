@@ -22,7 +22,7 @@ def scrapeDictionDotCom(clue):
     print(syns)
     for i in syns:
       i = i.replace(" ", "").replace("-", "").replace("_","")
-      if len(i) == clue.length:
+      if len(i) == clue.length and i not in clue.syns:
          clue.syns.append(i)
 
 #scrapes crosswordNexus on a per clue basis and appends clue to current synonym list
@@ -44,5 +44,5 @@ def scrapeCrossNexus(clue):
     print(syns)
     for i in syns:
       i = i.replace(" ", "").replace("-", "").replace("_","")
-      if len(i) == clue.length:
+      if len(i) == clue.length and i not in clue.syns:
          clue.syns.append(i)
